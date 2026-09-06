@@ -105,6 +105,7 @@
 </head>
 <body>
 
+    <!-- Header Section -->
     <header>
         <h1>JSICP - Jharkhand Portal</h1>
         <nav>
@@ -115,12 +116,14 @@
         </nav>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero">
         <h2>Bridging Communities, Universities & Industry</h2>
         <p>Help solve local challenges in Jharkhand through research, innovation, and collaboration.</p>
         <a href="#submit-section" class="btn">Report a Challenge</a>
     </section>
 
+    <!-- Problem Submission Form Section -->
     <div class="container" id="submit-section">
         <h3>Submit a Societal Challenge</h3>
         <form id="problemForm">
@@ -153,24 +156,47 @@
                 <textarea id="description" placeholder="Provide details about the issue you are facing..." required></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="media">Upload Photo / Document (Optional)</label>
-                <input type="file" id="media">
-            </div>
-
             <button type="submit" class="btn">Submit Challenge</button>
         </form>
     </div>
 
+    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Government of Jharkhand | Department of Higher & Technical Education</p>
     </footer>
 
+    <!-- JavaScript connected to Node.js Backend -->
     <script>
-        document.getElementById('problemForm').addEventListener('submit', function(e) {
+        document.getElementById('problemForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('धन्यवाद! तुमची समस्या यशस्वीपणे नोंदवली गेली आहे. ती योग्य विद्यापीठाकडे पाठवली जाईल.');
-            document.getElementById('problemForm').reset();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                district: document.getElementById('district').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value
+            };
+
+            try {
+                const response = await fetch('/api/submit-challenge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('धन्यवाद! तुमची समस्या यशस्वीपणे डेटाबेसमध्ये नोंदवली गेली आहे.');
+                    document.getElementById('problemForm').reset();
+                } else {
+                    alert('काहीतरी चूक झाली आहे. पुन्हा प्रयत्न करा.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('सर्व्हरशी संपर्क होऊ शकला नाही.');
+            }
         });
     </script>
 
